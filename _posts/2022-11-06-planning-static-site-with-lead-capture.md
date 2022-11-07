@@ -92,7 +92,7 @@ _Static Site with Lead Capture and no EventBus_
 
 #### Option 2
 The project will be broken up into two parts.
-> The static site hosted on S3 and use the API Gateway as an API. The API Gateway will send the payload to EventBridge. 
+> The static site hosted on S3 and use the API Gateway as an API. The API Gateway will send the payload to Dynamodb. A Dynamodb Stream will trigger a lambda which will forward the event to AWS EventBridge. 
 
 ![Desktop View](/assets/images/static_site_with_lead_capture_-_with_eventbus.png)
 _Static Site with Lead Capture and EventBus_
