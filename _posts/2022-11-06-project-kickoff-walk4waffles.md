@@ -1,12 +1,12 @@
 ---
-title: Planning a Static Site with Lead Capture
+title: Project Kickoff - Walk4Waffles
 date: 2022-11-06 00:00:00 +/-TTTT
-categories: [Software Projects, Static Site with Lead Capture]
-tags: [terraform, system design, aws, s3, dynamodb, lambda, apigateway]     # TAG names should always be lowercase
+categories: [Projects, Walk4Waffles]
+tags: [project management, project design, project planning]     # TAG names should always be lowercase
 mermaid: true
 ---
 
-Let's say a business or individual comes to you and wants you to build a static site that needs to have a way to capture visitors contact information. Following the [Planning a Software Project](/posts/planning-a-software-project/) this shouldn't be too hard of a project to flesh out the details and get started on our code.
+A non-profit, Walk4Waffles, has come to you to develop a simple site with a contact form so the business can build a following to market events and fundraisers. Following the [Planning a Software Project](/posts/planning-a-software-project/) this shouldn't be too hard of a project to flesh out the details and get started on our code.
 
 # Tasks with Stakeholders
 
@@ -91,16 +91,21 @@ For this project, we'll leverage AWS since there are some nice built in features
 _Static Site with Lead Capture and no EventBus_
 
 #### Option 2
-The project will be broken up into two parts.
-> The static site hosted on S3 and use the API Gateway as an API. The API Gateway will send the payload to Dynamodb. A Dynamodb Stream will trigger a lambda which will forward the event to AWS EventBridge. 
+The project will be broken up into three parts.
+> The static site hosted on S3.
 
-![Desktop View](/assets/images/static_site_with_lead_capture_-_with_eventbus.png)
-_Static Site with Lead Capture and EventBus_
+![Desktop View](/assets/images/static_site.png)
+_Static Site_
 
-> EventBridge will forward the event to an SQS target, and a Lambda will be triggered to add the information to the business CRM.
+> A lead API which will use API Gateway, Dynamodb, Lambda and EventBridge
+
+![Desktop View](/assets/images/lead_capture.png)
+_Static Site_
+
+> A lead import pipeline which will use SQS and Lambda
 
 ![Desktop View](/assets/images/lead_importer.png)
-_Static Site with Lead Capture and EventBus_
+_Lead importer_
 
 The two architectures here are almost identical, so how do you determine which one to use. Start by looking at the requirements and how each option stacks up against them.
 
