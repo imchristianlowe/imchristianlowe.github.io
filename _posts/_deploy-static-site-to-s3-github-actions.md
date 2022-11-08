@@ -1,6 +1,6 @@
 ---
 title: Deploy a Static Site to S3 with Github Actions
-date: 2022-11-07 00:00:00 +/-TTTT
+date: 2022-11-20 00:00:00 +/-TTTT
 categories: [Tutorials, AWS]
 tags: [terraform, github actions, github, ci/cd, pipelines]     # TAG names should always be lowercase
 mermaid: true
