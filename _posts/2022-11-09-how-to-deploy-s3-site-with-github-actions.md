@@ -1,6 +1,6 @@
 ---
 title: How To Deploy an S3 Site with Github Actions
-date: 2022-11-08 00:00:00 +/-TTTT
+date: 2022-11-09 00:00:00 +/-TTTT
 categories: [HowTos, AWS]
 tags: [terraform, github actions, github, ci/cd, pipelines]     # TAG names should always be lowercase
 mermaid: true
