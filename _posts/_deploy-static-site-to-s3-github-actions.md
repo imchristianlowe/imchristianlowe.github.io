@@ -6,7 +6,7 @@ tags: [terraform, github actions, github, ci/cd, pipelines]     # TAG names shou
 mermaid: true
 ---
 
-If you haven't read the [Walk4Waffles Project Kickoff](/posts/project-kickoff-walk4waffles/), this post builds upon the design proposed during the hypothetical planning.
+If you haven't read the [Landing Page Project Kickoff](/posts/project-kickoff-landing-page/), this post builds upon the design proposed during the hypothetical planning.
 
 1. Setup the repo
 2. Setup the infrastructure

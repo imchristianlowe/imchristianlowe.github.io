@@ -1,5 +1,5 @@
 ---
-title: AWS Route53 Setup with Terraform
+title: How to Setup Route53 with Terraform
 date: 2022-11-08 00:00:00 +/-TTTT
 categories: [HowTos, Aws]
 tags: [terraform, aws, route53, cloud]     # TAG names should always be lowercase
