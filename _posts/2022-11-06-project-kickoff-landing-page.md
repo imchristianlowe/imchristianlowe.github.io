@@ -1,12 +1,12 @@
 ---
-title: Project Kickoff - Walk4Waffles
+title: Project Kickoff - Landing Page
 date: 2022-11-06 00:00:00 +/-TTTT
-categories: [Projects, Walk4Waffles]
+categories: [Projects, Landing Page]
 tags: [project management, project design, project planning]     # TAG names should always be lowercase
 mermaid: true
 ---
 
-A non-profit, Walk4Waffles, has come to you to develop a simple site with a contact form so the business can build a following to market events and fundraisers. Following the [Planning a Software Project](/posts/planning-a-software-project/) this shouldn't be too hard of a project to flesh out the details and get started on our code.
+A business has come to you to develop a simple landing page with a contact form so the business can build a following to market events and fundraisers. Following the [Planning a Software Project](/posts/planning-a-software-project/) this shouldn't be too hard of a project to flesh out the details and get started on our code.
 
 # Tasks with Stakeholders
 
