@@ -1,7 +1,7 @@
 ---
 title: Project Prompt - Lead Capture Page
 date: 2022-11-06 00:00:00 +/-TTTT
-categories: [Projects, Landing Page]
+categories: [Project Prompt, Lead Capture Page]
 tags: [project prompt, project design, project planning]     # TAG names should always be lowercase
 mermaid: true
 ---
