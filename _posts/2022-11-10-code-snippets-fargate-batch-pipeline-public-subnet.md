@@ -1,7 +1,7 @@
 ---
-title: Code Snippets - Fargate Batch Pipeline Public Subnet
+title: Fargate Batch Public Subnet
 date: 2022-11-10 00:00:00 +/-TTTT
-categories: [HowTos, AWS]
+categories: [Code Snippets, Terraform]
 tags: [terraform, batch, fargate]     # TAG names should always be lowercase
 mermaid: true
 toc: true
