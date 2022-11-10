@@ -1,8 +1,8 @@
 ---
-title: Fargate Batch -> EventBridge -> SNS -> SQS
+title: SQS -> Lambda -> Fargate Batch
 date: 2022-11-11 00:00:00 +/-TTTT
 categories: [Code Snippets, Terraform]
-tags: [terraform, batch, fargate, sqs, lambda, eventbridge, sns]     # TAG names should always be lowercase
+tags: [terraform, batch, fargate, sqs, lambda]     # TAG names should always be lowercase
 mermaid: true
 toc: true
 ---
