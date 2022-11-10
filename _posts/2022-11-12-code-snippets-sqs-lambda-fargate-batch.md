@@ -155,7 +155,7 @@ module "batch" {
       name     = "LowPriorityFargate"
       state    = "ENABLED"
       priority = 1
-
+      create_scheduling_policy = false
       tags = {
         JobQueue = "Low priority job queue"
       }
@@ -165,7 +165,7 @@ module "batch" {
       name     = "HighPriorityFargate"
       state    = "ENABLED"
       priority = 99
-
+      create_scheduling_policy = false
       tags = {
         JobQueue = "High priority job queue"
       }
@@ -277,92 +277,11 @@ resource "aws_cloudwatch_log_group" "this" {
   tags = local.tags
 }
 
-module "eventbridge" {
-  source = "terraform-aws-modules/eventbridge/aws"
-  version = "~> 1.17"
-
-  create_bus = false
-
-  rules = {
-    batch-notifications = {
-      description   = "batch status update rule",
-      event_pattern = jsonencode({
-        "detail-type": [
-            "Batch Job State Change"
-        ],
-        "source": [
-            "aws.batch"
-        ],
-        "detail": {
-            # "status": [
-            #     "FAILED"
-            # ],
-            "jobQueue": [for k, v in module.batch.job_queues : v["arn"]]
-        }
-      })
-    }
-  }
-
-  targets = {
-    batch-notifications = [
-      {
-        arn  = module.sns_topic.sns_topic_arn
-        name = "send-status-update-to-sns"
-      },
-    ]
-  }
-}
-
-module "sns_topic" {
-  source  = "terraform-aws-modules/sns/aws"
-  version = "~> 3.0"
-
-  name  = "batch-notifications"
-}
-
-resource "aws_sns_topic_policy" "batch_notification_topic_policy" {
-    arn = module.sns_topic.sns_topic_arn
-    policy = data.aws_iam_policy_document.batch_notification_topic_policy.json
-}
-
-data "aws_iam_policy_document" "batch_notification_topic_policy" {
-    statement {
-        effect = "Allow"
-
-        actions = [
-            "SNS:GetTopicAttributes",
-            "SNS:SetTopicAttributes",
-            "SNS:AddPermission",
-            "SNS:RemovePermission",
-            "SNS:DeleteTopic",
-            "SNS:Subscribe",
-            "SNS:ListSubscriptionsByTopic",
-            "SNS:Publish"
-        ]
-
-        principals {
-            identifiers = ["*"]
-            type       = "AWS"
-        }
-
-        condition {
-            test = "StringEquals"
-            variable = "aws:SourceAccount"
-            values = [data.aws_caller_identity.current.id]
-        }
-
-        resources = [
-            module.sns_topic.sns_topic_arn
-        ]
-    }
-
-}
-
 module "sqs_queue" {
   source  = "terraform-aws-modules/sqs/aws"
   version = "~> 3.5"
 
-  name = "batch-notifications"
+  name = "batch-intake-queue"
 
 }
 
@@ -401,9 +320,67 @@ resource "aws_sqs_queue_policy" "batch_notification_policy" {
 }
 
 
-resource "aws_sns_topic_subscription" "batch_notifications" {
-  topic_arn = module.sns_topic.sns_topic_arn
-  protocol  = "sqs"
-  endpoint  = module.sqs_queue.sqs_queue_arn
+module "lambda_function" {
+  source  = "terraform-aws-modules/lambda/aws"
+  version = "~> 3.0"
+
+  function_name = "batch-launcher"
+  description   = "My awesome lambda function"
+  handler       = "index.lambda_handler"
+  runtime       = "python3.8"
+
+  publish = true
+
+  create_package         = false
+  local_existing_package = data.archive_file.lambda_zip_inline.output_path
+
+  attach_policy_statements = true
+  policy_statements = {
+    dynamodb = {
+      effect    = "Allow",
+      actions   = ["batch:SubmitJob"],
+      resources = concat([for k, v in module.batch.job_queues : v["arn"]], [for k, v in module.batch.job_definitions : v["arn"]])
+    }
+  }
+
+  allowed_triggers = {
+    AllowExecutionFromSqs = {
+      service    = "sqs"
+      source_arn = module.sqs_queue.sqs_queue_arn
+    }
+  }
+
+  environment_variables = {
+    BATCH_JOB      = module.batch.job_definitions["example"]["arn"]
+    BATCH_QUEUE    = module.batch.job_queues["low_priority"]["arn"]
+  }
+}
+
+data "archive_file" "lambda_zip_inline" {
+  type        = "zip"
+  output_path = "/tmp/lambda_zip_inline.zip"
+  source {
+    content  = <<EOF
+
+import boto3
+import os
+import uuid
+
+client = boto3.client(
+  'batch',
+  region_name='us-east-1',
+)
+
+def lambda_handler(event, context):
+  response = client.submit_job(
+    jobName=str(uuid.uuid4()),
+    jobQueue=os.environ.get("BATCH_QUEUE"),
+    jobDefinition=os.environ.get("BATCH_JOB")
+  )
+  return response
+
+EOF
+    filename = "index.py"
+  }
 }
 ```
