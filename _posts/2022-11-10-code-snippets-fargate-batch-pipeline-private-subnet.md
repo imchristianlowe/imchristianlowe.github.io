@@ -1,8 +1,8 @@
 ---
-title: Code Snippets - Serverless Batch Pipeline
+title: Code Snippets - Fargate Batch Pipeline Private Subnet
 date: 2022-11-10 00:00:00 +/-TTTT
 categories: [HowTos, AWS]
-tags: [terraform, github actions, github, ci/cd, pipelines]     # TAG names should always be lowercase
+tags: [terraform, batch, fargate, vpc endpoint]     # TAG names should always be lowercase
 mermaid: true
 toc: true
 ---
