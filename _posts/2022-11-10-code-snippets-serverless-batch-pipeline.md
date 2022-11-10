@@ -1,6 +1,6 @@
 ---
 title: Code Snippets - Serverless Batch Pipeline
-date: 2022-11-09 00:00:00 +/-TTTT
+date: 2022-11-10 00:00:00 +/-TTTT
 categories: [HowTos, AWS]
 tags: [terraform, github actions, github, ci/cd, pipelines]     # TAG names should always be lowercase
 mermaid: true
