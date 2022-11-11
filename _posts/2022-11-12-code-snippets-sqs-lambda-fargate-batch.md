@@ -1,5 +1,5 @@
 ---
-title: SQS -> Lambda -> Fargate Batch
+title: SQS -> Lambda -> Fargate Batch (w/ DLQ)
 date: 2022-11-11 00:00:00 +/-TTTT
 categories: [Code Snippets, Terraform]
 tags: [terraform, batch, fargate, sqs, lambda]     # TAG names should always be lowercase
@@ -82,6 +82,10 @@ module "vpc" {
 
 # Batch Module
 ```terraform
+
+################################################################################
+# Batch Module
+################################################################################
 locals {
   region = "us-east-1"
   name   = "batch-ex-fargate"
@@ -127,7 +131,7 @@ module "batch" {
         type      = "FARGATE"
         max_vcpus = 4
 
-        security_group_ids = [module.vpc_endpoint_security_group.security_group_id]
+        security_group_ids = [module.batch_instance_security_group.security_group_id]
         subnets            = module.vpc.public_subnets
 
         # `tags = {}` here is not applicable for spot
@@ -141,7 +145,7 @@ module "batch" {
         type      = "FARGATE_SPOT"
         max_vcpus = 4
 
-        security_group_ids = [module.vpc_endpoint_security_group.security_group_id]
+        security_group_ids = [module.batch_instance_security_group.security_group_id]
         subnets            = module.vpc.public_subnets
 
         # `tags = {}` here is not applicable for spot
@@ -152,9 +156,9 @@ module "batch" {
   # Job queus and scheduling policies
   job_queues = {
     low_priority = {
-      name     = "LowPriorityFargate"
-      state    = "ENABLED"
-      priority = 1
+      name                     = "LowPriorityFargate"
+      state                    = "ENABLED"
+      priority                 = 1
       create_scheduling_policy = false
       tags = {
         JobQueue = "Low priority job queue"
@@ -162,9 +166,9 @@ module "batch" {
     }
 
     high_priority = {
-      name     = "HighPriorityFargate"
-      state    = "ENABLED"
-      priority = 99
+      name                     = "HighPriorityFargate"
+      state                    = "ENABLED"
+      priority                 = 99
       create_scheduling_policy = false
       tags = {
         JobQueue = "High priority job queue"
@@ -228,11 +232,7 @@ module "batch" {
   tags = local.tags
 }
 
-################################################################################
-# Supporting Resources
-################################################################################
-
-module "vpc_endpoint_security_group" {
+module "batch_instance_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
 
@@ -277,50 +277,65 @@ resource "aws_cloudwatch_log_group" "this" {
   tags = local.tags
 }
 
-module "sqs_queue" {
-  source  = "terraform-aws-modules/sqs/aws"
-  version = "~> 3.5"
-
+################################################################################
+# SQS Batch Intake -> Batch Launcher Lambda (Includes DLQ)  
+################################################################################
+resource "aws_sqs_queue" "batch_intake_queue" {
   name = "batch-intake-queue"
+}
 
+resource "aws_sqs_queue" "batch_intake_dlq" {
+  name = "batch-intake-dlq"
+  redrive_allow_policy = jsonencode({
+    redrivePermission = "byQueue",
+    sourceQueueArns   = [aws_sqs_queue.batch_intake_queue.arn]
+  })
+}
+
+resource "aws_sqs_queue_redrive_policy" "batch_intake_queue" {
+  queue_url = aws_sqs_queue.batch_intake_queue.id
+  redrive_policy = jsonencode({
+    deadLetterTargetArn = aws_sqs_queue.batch_intake_dlq.arn
+    maxReceiveCount     = 2
+  })
 }
 
 data "aws_caller_identity" "current" {}
 
-data "aws_iam_policy_document" "batch_notification_queue_policy" {
-    statement {
-        effect = "Allow"
+data "aws_iam_policy_document" "batch_intake_queue_policy" {
+  statement {
+    effect = "Allow"
 
-        actions = [
-            "SQS:SendMessage"
-        ]
+    actions = [
+      "SQS:SendMessage"
+    ]
 
-        principals {
-            identifiers = ["*"]
-            type       = "AWS"
-        }
-
-        condition {
-            test = "StringEquals"
-            variable = "aws:SourceAccount"
-            values = [data.aws_caller_identity.current.id]
-        }
-
-        resources = [
-            module.sqs_queue.sqs_queue_arn
-        ]
+    principals {
+      identifiers = ["*"]
+      type        = "AWS"
     }
 
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [data.aws_caller_identity.current.id]
+    }
+
+    resources = [
+      aws_sqs_queue.batch_intake_queue.arn
+    ]
+  }
+
 }
 
-resource "aws_sqs_queue_policy" "batch_notification_policy" {
-  queue_url = module.sqs_queue.sqs_queue_id
+resource "aws_sqs_queue_policy" "batch_intake_queue" {
+  queue_url = aws_sqs_queue.batch_intake_queue.id
 
-  policy = data.aws_iam_policy_document.batch_notification_queue_policy.json
+  policy = data.aws_iam_policy_document.batch_intake_queue_policy.json
 }
 
 
-module "lambda_function" {
+module "batch_launcher_lambda" {
   source  = "terraform-aws-modules/lambda/aws"
   version = "~> 3.0"
 
@@ -329,6 +344,11 @@ module "lambda_function" {
   handler       = "index.lambda_handler"
   runtime       = "python3.8"
 
+  environment_variables = {
+    BATCH_JOB   = module.batch.job_definitions["example"]["arn"]
+    BATCH_QUEUE = module.batch.job_queues["low_priority"]["arn"]
+  }
+
   publish = true
 
   create_package         = false
@@ -336,24 +356,36 @@ module "lambda_function" {
 
   attach_policy_statements = true
   policy_statements = {
-    dynamodb = {
+    batch = {
       effect    = "Allow",
       actions   = ["batch:SubmitJob"],
-      resources = concat([for k, v in module.batch.job_queues : v["arn"]], [for k, v in module.batch.job_definitions : v["arn"]])
+      resources = concat(
+        [for k, v in module.batch.job_queues : v["arn"]], 
+        [for k, v in module.batch.job_definitions : v["arn"]]
+      )
+    }
+  }
+  attach_policies    = true
+  number_of_policies = 1
+
+  policies = [
+    "arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole",
+  ]
+
+  event_source_mapping = {
+    sqs = {
+      event_source_arn        = aws_sqs_queue.batch_intake_queue.arn
+      function_response_types = ["ReportBatchItemFailures"]
     }
   }
 
   allowed_triggers = {
-    AllowExecutionFromSqs = {
+    sqs = {
       service    = "sqs"
-      source_arn = module.sqs_queue.sqs_queue_arn
+      source_arn = aws_sqs_queue.batch_intake_queue.arn
     }
   }
 
-  environment_variables = {
-    BATCH_JOB      = module.batch.job_definitions["example"]["arn"]
-    BATCH_QUEUE    = module.batch.job_queues["low_priority"]["arn"]
-  }
 }
 
 data "archive_file" "lambda_zip_inline" {
