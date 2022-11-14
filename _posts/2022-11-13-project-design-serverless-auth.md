@@ -317,7 +317,7 @@ Entity Chart
 >For a simple primary key, the maximum length of the first attribute value (the partition key) is 2048 bytes. \
 For a composite primary key, the maximum length of the second attribute value (the sort key) is 1024 bytes.
 
-- Why the crazy token key? We want to prevent collisions as much as possible and our application should always know what type of key and the subtype it's looking for so we can always include the type and subtype in the request. The strings are also small enough that they don't take up too much space so our tokens will still be able to fit within the key size limit of 1024. Please see [Verifying Key Sizes](/posts/project-prompt-sls-auth/#verifying-key-sizes) to see the code verifying the key size limits.
+- Why the crazy token key? We want to prevent collisions as much as possible and our application should always know what type of key and the subtype it's looking for so we can always include the type and subtype in the request. The strings are also small enough that they don't take up too much space so our tokens will still be able to fit within the key size limit of 1024. Please see [Verifying Key Sizes](/posts/project-design-serverless-auth/#verifying-key-sizes) to see the code verifying the key size limits.
 
 UMLs
 ===================
