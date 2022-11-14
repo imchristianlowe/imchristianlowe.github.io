@@ -7,7 +7,7 @@ mermaid: true
 toc: true
 ---
 
-If you haven't read the [Landing Page Project Kickoff](/posts/project-prompt-lead-capture-page/) or the [How To Setup Route53 with Terraform](/posts/how-to-setup-route53-with-terraform/) post, this post builds upon both of those. At a minimum, this guide requires a public hosted zone created in Route53.
+If you haven't read the [Landing Page Project Kickoff](/posts/project-design-lead-capture-page/) or the [How To Setup Route53 with Terraform](/posts/how-to-setup-route53-with-terraform/) post, this post builds upon both of those. At a minimum, this guide requires a public hosted zone created in Route53.
 
 1. Setup the repo
 2. Setup the infrastructure
