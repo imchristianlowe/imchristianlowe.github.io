@@ -18,6 +18,7 @@ Requirements
 - Users must be able to delete their own authentication tokens in case they believe they have been compromised
 - Passwords and tokens must be securely stored to prevent displaying them in clear text. Additionally tokens must be securely generated.
 - Users should be able to delete their own account
+- No two accounts should be able to have the same email or phone number
 
 - Would be nice to have events for user actions to enable future automation
     - Created
@@ -61,36 +62,6 @@ sequenceDiagram
     Server->>User: Great. I've temporarily saved it. Please enter the code sent to the new info within 15 minutes
     User->>Server: Here's the temporary code
     Server->>User: Great. I've committed your change
-```
-
-ERD
-==========
-```mermaid
-erDiagram
-    User ||--o{ Token : has
-
-    User {
-        uuid id "Unique id for the user."
-        string email "Must be unique"
-        bool email_verified "Indicator if the email has been verified."
-        string phone "Must be unique"
-        bool phone_verified "Indicator if the phone has been verified."
-        bytes salt "User password salt."
-        bytes password "User password hash."
-        string mfa_preference "User preference for MFA notifications."
-        int created "Epoch timestamp of when the user was created."
-        int last_logged_in "Epoc timestamp of when the user last logged in."
-    }
-    Token {
-        string value "Value of the token"
-        string user_id FK "The user_id the token is associated with"
-        string type "Type of token. auth or mfa"
-        string subtype "if type == auth (jwt | session); else (email | phone | login)"
-        string device "Device that generated the token."
-        string expiration "Datetime string of when the token expires."
-        string created "Date time string of when the token was created."
-        int ttl "Epoch timestamp of when to expire the token"
-    }
 ```
 
 
@@ -289,6 +260,37 @@ Use this endpoint to verify JWT.
 | `POST`  | * `access_token` | `200_OK`<br>* `access_token`<br>* `refresh_token`<br><br>`401_UNAUTHORIZED` <br>* `non_field_errors`|
 
 
+ERD
+==========
+```mermaid
+erDiagram
+    User ||--o{ Token : has
+
+    User {
+        uuid id "Unique id for the user."
+        string email "Must be unique"
+        bool email_verified "Indicator if the email has been verified."
+        string phone "Must be unique"
+        bool phone_verified "Indicator if the phone has been verified."
+        bytes salt "User password salt."
+        bytes password "User password hash."
+        string mfa_preference "User preference for MFA notifications."
+        int created "Epoch timestamp of when the user was created."
+        int last_logged_in "Epoc timestamp of when the user last logged in."
+    }
+    Token {
+        string value "Value of the token"
+        string user_id FK "The user_id the token is associated with"
+        string type "Type of token. auth or mfa"
+        string subtype "if type == auth (jwt | session); else (email | phone | login)"
+        string device "Device that generated the token."
+        string expiration "Datetime string of when the token expires."
+        string created "Date time string of when the token was created."
+        int ttl "Epoch timestamp of when to expire the token"
+    }
+```
+
+
 Access Patterns
 ===============
 Let's look at what access patterns we have from our ERD and API
@@ -308,10 +310,10 @@ Let's look at what access patterns we have from our ERD and API
 Entity Chart
 ============
 
-| Entity | PK | SK | GSI1PK | GSI1SK | GSI2PK | GSI2SK | Attributes | 
-| :---   |:---|:---| :---   | :---   | :---   | :---   | :---   |
-| Token | token#{type}#{subtype}#{value} | user#{user_id} | user#{user_id} | token#{type}#{subtype}#{value} | |  | * ttl<br>* created<br>* expires<br>* device
-| User | user#{id} | user#{id} | phone#{phone} | phone#{phone} | email#{email} | email#{email} | * password_hash<br>* password_salt<br>* email_verified<br>* phone_verified<br>* created<br>* last_logged_in |
+| Entity | PK | SK | GSI1PK |  GSI2PK |  Attributes | 
+| :---   |:---|:---| :---   | :---   | :---   |
+| Token | user#{user_id} | token#{type}#{subtype}#{value} | | | * ttl<br>* created<br>* expires<br>* device
+| User | user#{id} | user#{id} | {email} | {phone} | * password_hash<br>* password_salt<br>* email_verified<br>* phone_verified<br>* created<br>* last_logged_in |
 
 - Need to verify that the value of a JWT won't exceed the secondary key size limit of Dynamodb which is 1024 bytes according to the [docs](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes)
 >For a simple primary key, the maximum length of the first attribute value (the partition key) is 2048 bytes. \
@@ -330,6 +332,19 @@ User and Token Objects
 ```mermaid
 classDiagram
 
+    class DynamodbIndex{
+        +name
+        +pk
+        +sk
+    }
+
+    class DynamodbItem{
+
+        -create_indexes()* DynamodbIndex, List~DynamodbIndex~, List~DynamodbIndex~
+        +commit()
+        +delete()
+    }
+
     class User{
         +id: str = None
         +email: str = None
@@ -342,83 +357,97 @@ classDiagram
         +created: str = None
         +mfa_preference: str = None
 
-        +to_json()
-        +check_password(raw_password: str) None
+        +create_indexes()
     }
-    class UserCommand~ABC~{
+    
+    class Token{
+        -token_type_map: dict
+        +value: str
+        +user_id: str
+        +type: Literal["oauth"]
+        +subtype: Literal["access", "refresh"]
+        +expiration: str = None
+        +created: str = None
+        +ttl: int = None
+
+        +create_indexes()
+    }
+
+    DynamodbItem <|-- User
+    DynamodbItem <|-- Token
+```
+
+UserSerializer and TokenSerializer
+------------
+Leaning on the [Factory Pattern](https://refactoring.guru/design-patterns/factory-method/)
+[Python Example](https://refactoring.guru/design-patterns/factory-method/python/example#lang-features)
+
+This will live in the Lambda layer and be called by the other Lambda functions.
+
+Note: I'm pretty sure this is the same pattern 
+```mermaid
+classDiagram
+    class TokenSerializer~ABC~{
+        -type
+        -subtype
+
+        +create_token(user_id) Token
+        +get_token(value: str, user_id: str)
+        +delete_token(value: str, user_id: str)
+
+        -generate_token_value(user_id: str)* str
+        +validate_token_value(token_value: str)*
+        +to_json(token: Token)*
+    }
+
+    class JwtAccessSerializer~PrivateKeyBytes~{
+        -type
+        -subtype
+        -private_key_bytes
+
+        -generate_token_value(user: User)* str
+        +validate_token_value(token_value: str)*
+        +to_json(token: Token)*
+    }
+
+    class JwtRefreshSerializer~PrivateKeyBytes~{
+        -type
+        -subtype
+        -private_key_bytes
+
+        -generate_token_value(user: User)* str
+        +validate_token_value(token_value: str)*
+        +to_json(token: Token)*
+    }
+
+    class MfaTokenSerializer{
+        -type
+        -subtype
+
+        -generate_token_value(user_id: str)* str
+        +validate_token_value(token_value: str)*
+        +to_json(token: Token)*
+    }
+
+    TokenSerializer <|-- JwtAccessSerializer : InheritsFrom
+    TokenSerializer <|-- JwtRefreshSerializer : InheritsFrom
+    TokenSerializer <|-- MfaTokenSerializer : InheritsFrom
+```
+
+```mermaid
+classDiagram
+
+    class UserSerializer{
+
         +create_user(user_dict: dict) User
         +get_user_by_id(id: str) User
         +get_user_by_email(email: str) User
         +get_user_by_phone(phone: str) User
         +update_user(user: User, update_payload: dict) User
         +delete_user(id: str) dict
+        +to_json() dict
+        +get_tokens_for_user(user_id: str) list[Token]
     }
-```
-
-Tokens
----
-```mermaid
-classDiagram
-    class Token{
-        -token_type_map: dict
-        -value: str
-        +user_id: str
-        +type: Literal["oauth"]
-        +subtype: Literal["access", "refresh"]
-        +device: str = None
-        +expiration: str = None
-        +created: str = None
-        +ttl: int = None
-
-        -__post_init__() None
-        +to_json()
-        +generate_pk()
-    }
-```
-
-TokenFactory
-------------
-Leaning on the [Abstract Factory Pattern](https://refactoring.guru/design-patterns/factory-method/)
-[Python Example](https://refactoring.guru/design-patterns/factory-method/python/example#lang-features)
-
-This should also be a Singleton so we consistently access the same private key instance throughout the life of the application.\
-[Singleton Pattern](https://refactoring.guru/design-patterns/singleton) \
-[Python Example](https://refactoring.guru/design-patterns/singleton/python/example#example-1)
-
-This will live in the Lambda layer and be called by the other Lambda functions.
-```mermaid
-classDiagram
-    class TokenFactory~ABC~{
-        +get_tokens_by_user_id(id: str) List~Token~
-        +create_token(token_dict: dict) Token
-        +get_token(token: Token) Token
-        +delete(token: Token) dict
-        +validate_token(token: Token)
-    }
-
-    class JwtTokenFactory~TokenFactory, PrivateKeyBytes~{
-        -private_key_bytes
-
-        +public_key
-        
-        -set_public_key()
-        
-        +create_token(token_dict: dict) Token
-        +get_token(token: Token) Token
-        +delete(token: Token) dict
-        +validate_token(token: Token)
-        +refresh(refresh_token: str)
-    }
-
-    class MfaTokenFactory~TokenFactory~{
-        +create_token(token_dict: dict) Token
-        +get_token(token: Token) Token
-        +delete(token: Token) dict
-        +validate_token(token: Token)
-    }
-
-    TokenFactory <-- JwtTokenFactory
-    TokenFactory <-- MfaTokenFactory
 ```
 
 Token Strategy
