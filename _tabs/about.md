@@ -1,7 +1,7 @@
 ---
 # the default layout is 'page'
 icon: fas fa-info-circle
-order: 4
+order: 5
 ---
 
 Welcome to where I'll write up things as I learn. I've tried using other platforms like Wordpress and Medium in the past to keep track of things, but I was always paranoid that somehow the data would get lost and then it couldn't be recovered. Now I'm giving Git and Github Pages a shot. Even if Github crashes and data is lost, I'll have a copy on my machine and will be able to redeploy to another server.
