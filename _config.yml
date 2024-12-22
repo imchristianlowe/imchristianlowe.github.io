@@ -19,18 +19,18 @@ timezone: America/New_York
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: banananeer                          # the main title
+title: Christian Lowe                          # the main title
 
-tagline: Learn. Experiment. Iterate. # it will display as the sub-title
+tagline: Unsupervised automator simplifying the complex. # it will display as the sub-title
 
 description: >-                        # used by seo meta and the atom feed
-  Learnings and things.
+  Learning by experimenting and iterating.
 
 # fill in the protocol & hostname for your site, e.g., 'https://username.github.io'
-url: 'https://banananeer.github.io'
+url: 'https://imchristianlowe.github.io'
 
 github:
-  username: banananeer             # change to your github username
+  username: imchristianlowe             # change to your github username
 
 # twitter:
   # username:             # change to your twitter username
@@ -38,12 +38,12 @@ github:
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: banananeer
-  email: banananeer@gmail.com             # change to your email address
+  name: imchristianlowe
+  email: imchristianlowe@gmail.com             # change to your email address
   links:
     # The first element serves as the copyright owner's link
     # - https://twitter.com/username      # change to your twitter homepage
-    - https://github.com/banananeer       # change to your github homepage
+    - https://github.com/imchristianlowe       # change to your github homepage
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
     # - https://www.linkedin.com/in/username
