@@ -4,6 +4,10 @@
   type: github
   icon: 'fab fa-github'
 -
+  type: youtube
+  icon: 'fab fa-youtube'
+  url: https://youtube.com/@IMChristianLowe
+-
   type: rss
   icon: 'fas fa-rss'
   noblank: true
