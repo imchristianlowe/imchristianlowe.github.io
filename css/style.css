@@ -109,6 +109,14 @@ h2 {
 .tagline {
   font-size: 1.25rem;
   color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.about {
+  max-width: 600px;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.7;
   margin-bottom: 1.5rem;
 }
 

@@ -22,11 +22,11 @@
   <section id="hero">
     <img src="assets/images/avatar.png" alt="Christian Lowe" class="avatar">
     <h1>Christian Lowe</h1>
-    <p class="tagline">Unsupervised automator simplifying the complex</p>
+    <p class="tagline">Security Engineer | Building automation at scale</p>
+    <p class="about">I bridge security, DevOps, and software engineering to build systems that scale. From forensic pipelines processing hundreds of millions of records to production-grade homelab infrastructure, I automate the complex so teams can focus on what matters.</p>
     <div class="social-links">
       <a href="https://github.com/imchristianlowe" title="GitHub">GitHub</a>
-      <a href="https://youtube.com/@IMChristianLowe" title="YouTube">YouTube</a>
-      <a href="mailto:imchristianlowe@gmail.com" title="Email">Email</a>
+      <a href="https://www.linkedin.com/in/imchristianlowe/" title="LinkedIn">LinkedIn</a>
     </div>
   </section>
 
@@ -34,24 +34,14 @@
     <h2>Projects</h2>
     <div class="projects-grid">
       <div class="project-card">
-        <h3>Project Name</h3>
-        <p>Brief description of what this project does and the technologies used.</p>
-        <a href="#" class="link">View Project &rarr;</a>
-      </div>
-      <div class="project-card">
         <h3>LaunchStacks</h3>
-        <p>Description of LaunchStacks and what it does.</p>
-        <a href="#" class="link">View Project &rarr;</a>
+        <p>IaC templates and Claude Code agent prompts making DevOps, security, and networking accessible. Software engineering consulting firm providing battle-tested infrastructure patterns.</p>
+        <a href="https://launchstacks.dev" class="link">View Project &rarr;</a>
       </div>
       <div class="project-card">
         <h3>Homelab</h3>
-        <p>Description of your homelab setup and what you run on it.</p>
-        <a href="#" class="link">View Project &rarr;</a>
-      </div>
-      <div class="project-card">
-        <h3>Another Project</h3>
-        <p>Brief description of another project you want to showcase.</p>
-        <a href="#" class="link">View Project &rarr;</a>
+        <p>Production-grade infrastructure across 5 Docker hosts and 2 VLANs. Full observability stack (Prometheus, Grafana, Loki), self-hosted Git with CI/CD, 29+ services managed via Ansible and OpenTofu.</p>
+        <a href="https://github.com/imchristianlowe" class="link">View Project &rarr;</a>
       </div>
     </div>
   </section>
@@ -59,32 +49,54 @@
   <section id="experience">
     <h2>Experience</h2>
     <div class="experience-item">
-      <h3>Job Title</h3>
-      <div class="company">Company Name</div>
-      <div class="date">Month Year - Present</div>
+      <h3>Security Engineer II</h3>
+      <div class="company">Amazon</div>
+      <div class="date">May 2025 - Present</div>
       <ul>
-        <li>Key accomplishment or responsibility</li>
-        <li>Another achievement with measurable impact</li>
-        <li>Technologies or skills utilized</li>
+        <li>Washington, DC · On-site</li>
       </ul>
     </div>
     <div class="experience-item">
-      <h3>Previous Job Title</h3>
-      <div class="company">Previous Company</div>
-      <div class="date">Month Year - Month Year</div>
+      <h3>Senior Software Engineer</h3>
+      <div class="company">Rapid7</div>
+      <div class="date">Jan 2023 - May 2025</div>
       <ul>
-        <li>Key accomplishment or responsibility</li>
-        <li>Another achievement with measurable impact</li>
-        <li>Technologies or skills utilized</li>
+        <li>Deployed and maintained Timesketch, open source collaborative forensic analysis tool, for incident response allowing for easier hand-offs and greater investigation efficiency in a globally distributed remote incident response service.</li>
+        <li>Designed and developed an end-to-end forensic pipeline for incident response engagements, allowing analysts to retrieve, parse, and analyze datasets on the order of 100's of millions of records, saving thousands of hours of manual work.</li>
+        <li>Developed a Python library to extend Django REST Framework capabilities allowing the team to move to an event driven architecture and perform security and customer management automations.</li>
+        <li>Created and implemented a Django REST Framework permission class, allowing exposure of internal APIs to external teams with business control over access.</li>
+        <li>Collaborated with customer facing teams to develop a unified customer management system across three different managed services.</li>
+        <li>Developed a collaborative data science platform in the cloud using JupyterHub and AWS.</li>
       </ul>
     </div>
     <div class="experience-item">
-      <h3>Earlier Role</h3>
-      <div class="company">Earlier Company</div>
-      <div class="date">Month Year - Month Year</div>
+      <h3>Software Engineer II</h3>
+      <div class="company">Rapid7</div>
+      <div class="date">Jan 2021 - Jan 2023</div>
       <ul>
-        <li>Key accomplishment or responsibility</li>
-        <li>Another achievement with measurable impact</li>
+        <li>Sole technical contributor supporting the decision to acquire Velociraptor by prototyping integration into the Rapid7 Insight agent, building the foundation for the remote incident response service.</li>
+        <li>Developed automation to improve incident management, tracking and communication through integration with Slack, Salesforce and Jira.</li>
+        <li>Automated monthly delivery of key customer status and security reports, saving analysts over 500 hours of manual report writing each month.</li>
+      </ul>
+    </div>
+    <div class="experience-item">
+      <h3>Software Engineer I</h3>
+      <div class="company">Rapid7</div>
+      <div class="date">Feb 2020 - Jan 2021</div>
+      <ul>
+        <li>Increased transparency between analysts and customers by integrating an internal commenting system with an external customer facing product.</li>
+        <li>Decreased alert fatigue by developing a system to collect and parse hundreds of thousands of low fidelity alerts and sending more than 75,000 daily email notifications.</li>
+        <li>Refactored an alert automation framework from local machines to APIs and cloud services improving reliability.</li>
+      </ul>
+    </div>
+    <div class="experience-item">
+      <h3>Associate MDR Analyst</h3>
+      <div class="company">Rapid7</div>
+      <div class="date">Nov 2018 - Jan 2020</div>
+      <ul>
+        <li>Automated phishing reports by querying logs and pivoting on IOCs including malicious IPs, websites, and processes.</li>
+        <li>Assisted in multiple major incident response engagements.</li>
+        <li>Created an installable Python library using Artifactory and semantic versioning.</li>
       </ul>
     </div>
   </section>
@@ -96,35 +108,36 @@
         <h3>Languages</h3>
         <ul>
           <li>Python</li>
-          <li>JavaScript</li>
           <li>TypeScript</li>
-          <li>Go</li>
+          <li>SQL</li>
+          <li>Bash</li>
         </ul>
       </div>
       <div class="skill-category">
-        <h3>Cloud & Infrastructure</h3>
+        <h3>Infrastructure</h3>
         <ul>
-          <li>AWS</li>
-          <li>Terraform</li>
+          <li>AWS / CDK</li>
+          <li>Terraform / OpenTofu</li>
+          <li>Ansible</li>
           <li>Docker</li>
-          <li>Kubernetes</li>
         </ul>
       </div>
       <div class="skill-category">
-        <h3>Tools & Frameworks</h3>
+        <h3>Observability</h3>
         <ul>
-          <li>Git</li>
-          <li>CI/CD</li>
-          <li>Linux</li>
-          <li>REST APIs</li>
+          <li>Prometheus</li>
+          <li>Grafana</li>
+          <li>Loki</li>
+          <li>Traefik</li>
         </ul>
       </div>
       <div class="skill-category">
-        <h3>Other</h3>
+        <h3>Security</h3>
         <ul>
-          <li>System Design</li>
-          <li>Automation</li>
-          <li>Monitoring</li>
+          <li>Incident Response</li>
+          <li>Digital Forensics</li>
+          <li>Timesketch</li>
+          <li>Velociraptor</li>
         </ul>
       </div>
     </div>
@@ -133,9 +146,7 @@
   <section id="education">
     <h2>Education</h2>
     <div class="education-item">
-      <h3>Degree Name</h3>
-      <div class="school">University Name</div>
-      <div class="date">Year - Year</div>
+      <h3>Frederick Community College</h3>
     </div>
   </section>
 
