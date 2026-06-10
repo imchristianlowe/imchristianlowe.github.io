@@ -22,8 +22,8 @@
   <section id="hero">
     <img src="assets/images/avatar.png" alt="Christian Lowe" class="avatar">
     <h1>Christian Lowe</h1>
-    <p class="tagline">Security Engineer | Building automation at scale</p>
-    <p class="about">I bridge security, DevOps, and software engineering to build systems that scale. From forensic pipelines processing hundreds of millions of records to production-grade homelab infrastructure, I automate the complex so teams can focus on what matters.</p>
+    <p class="tagline">Security Engineer | AI/Agentic Systems &amp; Automation at Scale</p>
+    <p class="about">Security engineer focused on multiplying what security teams can do—through operational platforms, automation, and AI/agentic systems adopted org-wide. I translate fuzzy operational problems into durable tooling, establish the standards and patterns teams build on, and influence how AI gets embedded into day-to-day security operations.</p>
     <div class="social-links">
       <a href="https://github.com/imchristianlowe" title="GitHub">GitHub</a>
       <a href="https://www.linkedin.com/in/imchristianlowe/" title="LinkedIn">LinkedIn</a>
@@ -35,13 +35,13 @@
     <div class="projects-grid">
       <div class="project-card">
         <h3>LaunchStacks</h3>
-        <p>IaC templates and Claude Code agent prompts making DevOps, security, and networking accessible. Software engineering consulting firm providing battle-tested infrastructure patterns.</p>
+        <p>Software engineering consulting firm providing battle-tested IaC templates and AI agent prompts that make DevOps, security, and networking accessible. Built on the same patterns used in production security engineering at scale.</p>
         <a href="https://launchstacks.dev" class="link">View Project &rarr;</a>
       </div>
       <div class="project-card">
         <h3>Homelab</h3>
-        <p>Production-grade infrastructure across 5 Docker hosts and 2 VLANs. Full observability stack (Prometheus, Grafana, Loki), self-hosted Git with CI/CD, 29+ services managed via Ansible and OpenTofu.</p>
-        <a href="https://github.com/imchristianlowe" class="link">View Project &rarr;</a>
+        <p>Production-grade infrastructure across 5 Docker hosts and 2 VLANs, managed entirely via Ansible and OpenTofu. Runs 29+ self-hosted services with a full observability stack (Prometheus, Grafana, Loki), self-hosted Git, and automated CI/CD pipelines.</p>
+        <a href="https://github.com/imchristianlowe" class="link">View on GitHub &rarr;</a>
       </div>
     </div>
   </section>
@@ -50,28 +50,33 @@
     <h2>Experience</h2>
     <div class="experience-item">
       <h3>Security Engineer II</h3>
-      <div class="company">Amazon</div>
+      <div class="company">Amazon · Washington, D.C.</div>
       <div class="date">May 2025 - Present</div>
       <ul>
-        <li>Washington, DC · On-site</li>
+        <li>Co-built and shipped an automated AI triage agent that dispositions security cases on arrival—collecting logs, gathering detection context and IOCs, and making determinations—reaching ~96% correct disposition on complex non-perimeter detections (1,914 of 2,000) and saving over 2,300 analyst investigation hours since February across perimeter and non-perimeter alerts.</li>
+        <li>Unified 15 services across 13 distinct auth mechanisms behind a config-driven Python authentication library and proxy API for the global security organization. Designed to be agent-introspectable, it has been adopted by 5 teams across more than a dozen projects—collapsing an onboarding path that previously took weeks of setup plus 6–12 months of internal-tooling ramp into a same-day, self-serve experience.</li>
+        <li>Automated the majority of detection onboarding—a historically complex, error-prone process—with an AI agent that takes the workflow from hours to minutes (roughly 90% hands-off), eliminating missed steps and becoming a critical, standard part of the team's onboarding process.</li>
+        <li>Introduced collaborative development to a platform that did not support it, designing and building a CLI that provisions isolated user workspaces so engineers no longer overwrite each other's work, with a built-in AI agent that guides users to author automations that are scalable and secure by default, including secrets management out of the box.</li>
+        <li>Rebuilt an antiquated, quality-control-free automation system into a governed development pipeline with code formatting, automated testing, and full auditability—surfacing silently-failing workflows that had been broken for months and generating documentation for leadership that reduced the number of people needing direct platform access to perform audits.</li>
       </ul>
     </div>
     <div class="experience-item">
       <h3>Senior Software Engineer</h3>
-      <div class="company">Rapid7</div>
+      <div class="company">Rapid7 · Remote</div>
       <div class="date">Jan 2023 - May 2025</div>
       <ul>
         <li>Deployed and maintained Timesketch, open source collaborative forensic analysis tool, for incident response allowing for easier hand-offs and greater investigation efficiency in a globally distributed remote incident response service.</li>
         <li>Designed and developed an end-to-end forensic pipeline for incident response engagements, allowing analysts to retrieve, parse, and analyze datasets on the order of 100's of millions of records, saving thousands of hours of manual work.</li>
-        <li>Developed a Python library to extend Django REST Framework capabilities allowing the team to move to an event driven architecture and perform security and customer management automations.</li>
+        <li>Developed a Python library to extend Django REST Framework capabilities allowing the team to move to an event driven architecture and perform security and customer management automations on any API event in the environment.</li>
         <li>Created and implemented a Django REST Framework permission class, allowing exposure of internal APIs to external teams with business control over access.</li>
         <li>Collaborated with customer facing teams to develop a unified customer management system across three different managed services.</li>
+        <li>Migrated a legacy Python library to a new one by creating unit and integration tests, allowing transition to a new service without any downtime.</li>
         <li>Developed a collaborative data science platform in the cloud using JupyterHub and AWS.</li>
       </ul>
     </div>
     <div class="experience-item">
       <h3>Software Engineer II</h3>
-      <div class="company">Rapid7</div>
+      <div class="company">Rapid7 · Arlington, VA</div>
       <div class="date">Jan 2021 - Jan 2023</div>
       <ul>
         <li>Sole technical contributor supporting the decision to acquire Velociraptor by prototyping integration into the Rapid7 Insight agent, building the foundation for the remote incident response service.</li>
@@ -108,36 +113,72 @@
         <h3>Languages</h3>
         <ul>
           <li>Python</li>
-          <li>TypeScript</li>
-          <li>SQL</li>
+          <li>GoLang</li>
           <li>Bash</li>
+          <li>JavaScript</li>
+        </ul>
+      </div>
+      <div class="skill-category">
+        <h3>AWS</h3>
+        <ul>
+          <li>ECS</li>
+          <li>Lambda</li>
+          <li>SNS / SQS / EventBridge</li>
+          <li>SES / Batch / API Gateway</li>
         </ul>
       </div>
       <div class="skill-category">
         <h3>Infrastructure</h3>
         <ul>
-          <li>AWS / CDK</li>
           <li>Terraform / OpenTofu</li>
           <li>Ansible</li>
-          <li>Docker</li>
+          <li>Docker / Docker Compose</li>
+          <li>Jenkins / GitHub Actions</li>
         </ul>
       </div>
       <div class="skill-category">
-        <h3>Observability</h3>
+        <h3>Security Engineering</h3>
         <ul>
-          <li>Prometheus</li>
-          <li>Grafana</li>
-          <li>Loki</li>
-          <li>Traefik</li>
+          <li>Incident Response Automation</li>
+          <li>Alert Automation</li>
+          <li>Detection &amp; Response</li>
+          <li>AI/Agentic Workflows</li>
         </ul>
       </div>
       <div class="skill-category">
-        <h3>Security</h3>
+        <h3>Databases</h3>
         <ul>
-          <li>Incident Response</li>
-          <li>Digital Forensics</li>
-          <li>Timesketch</li>
+          <li>PostgreSQL</li>
+          <li>Redis</li>
+          <li>DynamoDB</li>
+          <li>MongoDB / OpenSearch</li>
+        </ul>
+      </div>
+      <div class="skill-category">
+        <h3>APIs &amp; Architecture</h3>
+        <ul>
+          <li>REST / GraphQL / gRPC</li>
+          <li>Event Driven Services</li>
+          <li>Microservice Architecture</li>
+          <li>Serverless Architecture</li>
+        </ul>
+      </div>
+      <div class="skill-category">
+        <h3>Forensics Tools</h3>
+        <ul>
           <li>Velociraptor</li>
+          <li>Timesketch</li>
+          <li>Plaso</li>
+          <li>AWS Lambda Powertools</li>
+        </ul>
+      </div>
+      <div class="skill-category">
+        <h3>Soft Skills</h3>
+        <ul>
+          <li>Cross-Team Collaboration</li>
+          <li>Mentoring</li>
+          <li>Project Planning</li>
+          <li>Documentation</li>
         </ul>
       </div>
     </div>
@@ -147,11 +188,12 @@
     <h2>Education</h2>
     <div class="education-item">
       <h3>Frederick Community College</h3>
+      <div class="school">Information Security and Assurance Certificate</div>
     </div>
   </section>
 
   <footer>
-    <p>&copy; 2025 Christian Lowe</p>
+    <p>&copy; 2026 Christian Lowe</p>
   </footer>
 </body>
 </html>
